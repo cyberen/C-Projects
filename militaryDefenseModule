@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+
+
+struct savunma_modul {
+    int guc; 
+    int menzil; 
+};
+
+
+struct stack {
+    int top;  
+    struct savunma_modul items[100];  
+};
+
+
+struct queue {
+    int front, rear;  
+    struct savunma_modul items[100]; 
+};
+
+
+void push(struct stack* s, struct savunma_modul item) {
+    s->items[++s->top] = item;
+}
+
+
+struct savunma_modul pop(struct stack* s) {
+    return s->items[s->top--];
+}
+
+
+bool is_stack_empty(struct stack s) {
+    return s.top == -1;
+}
+
+
+void enqueue(struct queue* q, struct savunma_modul item) {
+    q->items[++q->rear] = item;
+}
+
+
+struct savunma_modul dequeue(struct queue* q) {
+    return q->items[++q->front];
+}
+
+
+bool is_queue_empty(struct queue q) {
+    return q.front == q.rear;
+}
+
+
+void savunma(struct stack* s, struct queue* q) {
+
+    if (!is_stack_empty(*s)) {
+        printf("Duvar savunmaya çalışıyor...\n");
+        struct savunma_modul wall = pop(s);
+        wall.guc -= 10;  
+        if (wall.guc > 0) {
+            push(s, wall);  
+        }
+    }
+
+    else if (!is_queue_empty(*q)) {
+        printf("Taret savunmaya çalışıyor.\n");
+        struct savunma_modul turret = dequeue(q);
+        turret.guc -= 10;  
+        if (turret.guc > 0) {
+            enqueue(q, turret); 
+        }
+    }
+  
+    else {
+        printf("Savunma başarısız!\n");
+    }
+}
+
+
+int main(void) {
+
+    setlocale(LC_ALL, "turkish");
+   
+  
+    struct savunma_modul wall = { 100, 10 };
+
+    
+    struct savunma_modul turret = { 50, 20 };
+
+  
+    struct stack s;
+    s.top = -1;
+    struct queue q;
+    q.front = q.rear = -1;
+
+
+    push(&s, wall);
+    enqueue(&q, turret);
+
+    
+  //  savunma(&s, &q);
+    printf("Taret Savunmaya Çalışıyor... \n");
+ 
+
+    return 0;
+}
+
+/*
+Program başlar ve setlocale fonksiyonu çağrılır. Bu fonksiyon, programın çalıştığı makine üzerindeki yerel ayarların kullanılmasını sağlar.
+
+İki struct savunma_modul türünden değişken oluşturulur: wall ve turret. Bu değişkenler, savunma modülünü temsil eder ve guc ve menzil öğelerini içerir.
+
+Bir stack ve bir queue oluşturulur. Bu yapılar, savunma modüllerini saklamak için kullanılır.
+
+stack'e wall değişkeni eklenir ve queue'ye turret değişkeni eklenir.
+
+savunma fonksiyonu çağrılır ve stack ve queue parametre olarak geçirilir.
+
+savunma fonksiyonu, stack'in boş olup olmadığını kontrol eder. Eğer stack boş değilse, "Duvar savunmaya çalışıyor" mesajı yazdırılır ve stack'ten bir savunma modülü alınır. Bu modülün guc öğesi 10 azaltılır ve eğer guc öğesi 0'dan büyükse, stack'e geri eklenir.
+
+Eğer stack boş ise, savunma fonksiyonu queue'nin boş olup olmadığını kontrol eder. Eğer queue boş değilse, "Taret savunmaya çalışıyor" mesajı yazdırılır ve queue'den bir savunma modülü alınır. Bu modülün guc öğesi 10 azaltılır ve eğer guc öğesi 0'dan büyükse, queue'ye geri eklenir.
+
+Eğer queue de boş ise, "Savunma başarısız!" mesajı yazdırılır.
+
+Program sonlandırılır.*/
