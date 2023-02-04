@@ -1,0 +1,57 @@
+
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int balance = 25000;
+    int pasw;
+    int pass=1234;
+    
+    cout << " Card Pass : " << endl;
+    cin >> pasw;
+
+    if (pasw == pass) {
+        cout << "Congrulations Password Correct !" << endl;
+
+        while (true) {
+            cout << "Total Balance : " << balance << endl;
+            cout << " ************************************** " << endl;
+            cout << "1 - Money in " << endl;
+            cout << "2 - Money out " << endl;
+            
+            cout << "Choose what do you want to do : " << endl;
+            int choice;    cin >> choice;
+            
+            switch (choice) {
+            case 1 : 
+                cout << "How much money do you want to in :" << endl;
+                int coin; cin >> coin;
+                balance = balance + coin;
+                cout << "Proccess succsessed new balance : " << balance << endl;
+                break;
+            case 2 : 
+                cout << "How much money do you want to out" << endl;
+                int coun;  cin >> coun;
+                balance = balance - coun;
+                cout << "Proccess succsessed new balance : " << balance << endl;
+                break;
+            default : 
+                cout << "Wrong choice please try again : " << endl;
+                cin >> choice;
+            }
+
+        }
+
+
+
+    }
+    else {
+        cout << "Wrong pass Access Denied !" << endl;
+        
+    }
+
+   
+                
+}
