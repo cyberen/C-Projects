@@ -1,0 +1,564 @@
+#include <iostream>
+#include <clocale>
+#include <string>
+#include <sstream>
+#include <fstream>
+using namespace std;
+
+
+
+class Film {
+
+private:
+	string film1;
+	string film2;
+	string film3;
+	string mesage;
+
+public:
+	Film() {
+		film1 = "PREDESTINATION";
+		film2 = "AVATAR 2";
+		film3 = "THE BATMAN";
+		mesage = "SİNEMA SALONUMUZA HOŞGELDİNİZ!!!";
+	}
+
+	Film(string film1, string film2, string film3, string mesage) {
+		this->film1 = film1;
+		this->film2 = film2;
+		this->film3 = film3;
+		this->mesage = mesage;
+	}
+	~Film() {
+		cout << " " << endl;
+	}
+
+	friend void mesaj(Film mesaj);
+	friend class Yazdir;
+};
+
+
+void mesaj(Film mesaj) {
+	cout << mesaj.mesage << endl;
+}
+
+
+class Yazdir {
+public:
+	static void showInfos(Film filmbilgi) {
+		cout << "<<< VİZYONDAKİ FİLMLER >>>" << endl;
+		cout << filmbilgi.film1 << endl;
+		cout << filmbilgi.film2 << endl;
+		cout << filmbilgi.film3 << endl;
+
+	}
+
+};
+
+
+class UcretSaat : public Yazdir {
+private:
+	int ucretfilm;
+	int saat;
+
+
+
+public:
+	UcretSaat(int ucretfilm, double saat) {
+		this->ucretfilm = ucretfilm;
+		this->saat = saat;
+	}
+
+	friend class Yazdir2;
+
+};
+
+
+class Yazdir2 {
+public:
+	static void showInf(UcretSaat ucretBilgi) {
+		cout << "<<< BİLET FİYAT LİSTESİ>>>" << endl;
+		cout << "PREDESTINATION: " << ucretBilgi.ucretfilm << " TL" << endl;
+		cout << "AVATAR 2: " << ucretBilgi.ucretfilm << " TL" << endl;
+		cout << "THE BATMAN: " << ucretBilgi.ucretfilm << " TL" << endl;
+	}
+
+};
+
+
+class Musteri {
+private:
+	int toplamBiletSayisi;
+
+public:
+	int biletSayisi;
+	string* bilet;
+
+	Musteri(int toplamBiletSayisi) {
+		this->toplamBiletSayisi = toplamBiletSayisi;
+		biletSayisi = 0;
+		bilet = new string[toplamBiletSayisi];
+		for (int i = 0; i < toplamBiletSayisi; i++) {
+			bilet[i] = "";
+		}
+	}
+
+	void biletArtir() {
+		biletSayisi++;
+	}
+
+	void koltukSay() {
+		cout << "Toplam Koltuk Sayısı : " << toplamBiletSayisi << endl;
+		int bosBiletSayisi = toplamBiletSayisi - biletSayisi;
+		cout << "Dolu Koltuk Sayısı : " << biletSayisi << endl;
+		cout << "Boş Koltuk Sayısı: " << bosBiletSayisi << endl;
+	};
+
+
+	void biletSatınAl(int koltukNo, string adSoyad) {
+		if (koltukNo <= toplamBiletSayisi) {
+			if (bilet[koltukNo - 1] == "") {
+				bilet[koltukNo - 1] = adSoyad;
+				biletArtir();
+			}
+			else {
+				cout << "Bu Koltuk Dolu." << endl;
+			}
+		}
+		else {
+			cout << toplamBiletSayisi << " Koltuk Bulunmaktadır..." << endl;;
+		}
+
+	}
+
+
+
+
+	void biletListele() {
+		for (int i = 0; i < toplamBiletSayisi; i++) {
+			cout << i + 1 << ". Koltuk : " << bilet[i] << endl;
+		}
+	}
+
+
+
+};
+
+class LinkedList
+{
+	friend class Film;
+	friend class Musteri;
+
+private:
+	struct Node
+	{
+		int data;
+		Node* next;
+	};
+	Node* head;
+
+public:
+	LinkedList()
+	{
+		head = nullptr;
+
+	}
+
+	void append(int data)
+	{
+		if (head == nullptr)
+		{
+			head = new Node{ data, nullptr };
+		}
+		else
+		{
+			Node* current = head;
+			while (current->next != nullptr)
+			{
+				current = current->next;
+			}
+			current->next = new Node{ data, nullptr };
+		}
+	}
+
+	int print()
+	{
+		int sum = 0;
+		Node* current = head;
+		while (current != nullptr)
+		{
+			//cout << current->data << " ";
+			sum += current->data;
+			current = current->next;
+		}
+		//cout << endl;
+		return sum;
+	}
+};
+
+string text = "";
+void receipt(string a) {
+	text = text + a;
+	cout << text;
+	cout << " " << endl;
+}
+
+
+class Snack {
+protected:
+	string name;
+	int price;
+	LinkedList l;
+public:
+	int sum = 0;
+	Snack(string name1, int price1) {
+		name = name1;
+		price = price1;
+	}
+	int printList() {
+		return l.print();
+	}
+
+	~Snack() {}
+};
+
+class Popcorn :public Snack {
+
+public:
+	Popcorn() :Snack("", 0) {
+
+	}
+	void order();
+	void list();
+	string deliver();
+	~Popcorn() {}
+};
+void Popcorn::order() {
+	int n;
+	cout << "Siparis vermek istediginiz urunun numarasini giriniz." << endl;
+	cin >> n;
+	switch (n) {
+	case 1:
+		name = "Kucuk Boy Patlamis Misir";
+		price = 10;
+		sum += price;
+		l.append(price);
+		break;
+	case 2:
+		name = "Orta Boy Patlamis Misir";
+		price = 16;
+		sum += price;
+		l.append(price);
+		break;
+	case 3:
+		name = "Buyuk Boy Patlamis Misir";
+		price = 24;
+		sum += price;
+		l.append(price);
+		break;
+	default:
+		cout << "Gecersiz Deger." << endl;
+
+	}
+}
+void Popcorn::list() {
+	cout << "	Patlamis Misir Menusu " << endl;
+	cout << "1-Kucuk Boy Patlamis Misir - 10 TL" << endl;
+	cout << "2-Orta Boy Patlamis Misir - 16 TL" << endl;
+	cout << "3-Buyuk Boy Patlamis Misir - 24 TL" << endl;
+}
+string Popcorn::deliver() {
+	stringstream ss;
+	ss << price;
+	string str = ss.str();
+	cout << "Siparis Alindi. " << endl;
+	return name + "  " + str + " TL\n";
+}
+
+class Drink :public Snack {
+
+public:
+	Drink() :Snack(" ", 0) {
+
+	}
+	void order();
+	void list();
+	string deliver();
+	~Drink() {}
+};
+void Drink::order() {
+	int n;
+	cout << "Siparis vermek istediginiz urunun numarasini giriniz." << endl;
+	cin >> n;
+	switch (n) {
+	case 1:
+		name = "Kola";
+		price = 10;
+		sum += price;
+		l.append(price);
+		break;
+	case 2:
+		name = "Fanta";
+		price = 9;
+		sum += price;
+		l.append(price);
+		break;
+	case 3:
+		name = "Gazoz";
+		price = 8;
+		sum += price;
+		l.append(price);
+		break;
+	default:
+		cout << "Tekrar Giriniz : " << endl;
+		cin >> n;
+
+	}
+}
+void Drink::list() {
+	cout << "	Icecek Menusu " << endl;
+	cout << "1-Kola  \t 10tl" << endl;
+	cout << "2-Fanta \t 9tl" << endl;
+	cout << "3-Gazoz \t 8tl" << endl;
+}
+string Drink::deliver() {
+	stringstream ss;
+	ss << price;
+	string str = ss.str();
+	cout << "Siparis Alindi. " << endl;
+	return name + "  " + str + " TL\n";
+}
+
+
+void orderM(Popcorn a, Drink d) {
+	int n = 3;
+	while (n != 0) {
+		cout << "1-Patlamis Misir." << endl;
+		cout << "2-Icecek." << endl;
+		cout << "0-Siparis Bitir." << endl;
+		cout << "Siparis Vericeginiz Urunu Seciniz." << endl;
+
+		cin >> n;
+		switch (n) {
+		case 1:
+			a.list();
+			a.order();
+			receipt(a.deliver());
+			break;
+		case 2:
+			d.list();
+			d.order();
+			receipt(d.deliver());
+			break;
+		case 0:
+
+			cout << "Toplam Atistirmalik Tutari: " << (a.printList() + d.printList()) << " TL";
+			d.printList();
+			break;
+		default:
+			cout << "Tekrar Giriniz : " << endl;
+			cin >> n;
+		}
+	}
+
+}
+
+class girisArayuz {
+public:
+	friend class Musteri; friend class Film; friend class LinkedList; friend class Popcorn; friend class Drink; friend class Fatura;
+	Fatura f;
+	Popcorn p;
+	Drink d;
+	string otoname;
+
+	girisArayuz();
+
+	void welcome() {
+
+		cout << endl;
+		cout << " **************************************** " << endl;
+		cout << " -   SINEOTO OTOMASYON SISTEMINE HOSGELDINIZ   - " << endl;
+		cout << " * *************************************** " << endl;
+		cout << endl;
+
+	}
+
+	void giris() {
+		int islem;
+
+		cout << endl << endl;
+		cout << " 1 - Bilet Satın Alma Menüsü" << endl;
+		cout << " 2 - Atıştırmalık Satın Alma Menüsü" << endl;
+		cout << " 3 - Icecek Satın Alma Menüsü" << endl;
+		cout << " 4 - Hesap Odeme Menüsü " << endl;
+		cout << "" << endl << endl;
+		cout << " Hangi işlemi yapmak istersiniz : " << endl;
+		cin >> islem;
+
+		switch (islem) {
+		case 1:
+			cout << " Bilet satın alma menüsüne yönlendiriliyorsunuz ..." << endl;
+
+			break;
+		case 2:
+			cout << " Atıştırmalık satın alma menüsüne yönlendiriliyorsunuz ..." << endl << endl;
+			p.list();
+			p.order();
+			p.deliver();
+			giris();
+			break;
+		case 3:
+			cout << " Icecek satın alma menüsüne yönlendiriliyorsunuz ..." << endl << endl;
+			d.list();
+			d.order();
+			d.deliver();
+			giris();
+		case 4:
+			cout << " Hesap Odeme menüsüne yönlendiriliyorsunuz ..." << endl;
+			f.faturaYazdır();
+
+			break;
+		default:
+			cout << " Hatalı Giriş !!! Lütfen Geçerli Bir Sayı Giriniz : " << endl;
+			cin >> islem;
+
+
+		}
+	}
+};
+
+class Fatura {
+public:
+	friend class Musteri;
+	friend class Popcorn;
+	friend class Drink;
+	Popcorn p;
+	Drink d;
+
+
+
+	int bilet_tutar;
+	int snack_tutar;
+	int kdv_tutar;
+	double kdv_oran = 1.18;
+
+	Fatura(int bilet_tutar, int snack_tutar, int kdv_tutar) {
+		this->bilet_tutar = bilet_tutar;
+		this->snack_tutar = (p.sum) + (d.sum);
+		this->kdv_tutar = (bilet_tutar + snack_tutar) * kdv_oran;
+	}
+
+	~Fatura() {
+
+	}
+
+
+	void faturaYazdır() {
+
+		cout << endl;
+		cout << "\t --- Fatura Tutar Bilgileri --- " << endl;
+		cout << endl;
+		cout << "Toplam Atistirmalik Tutari: " << (p.printList() + d.printList()) << " TL";
+		d.printList();
+
+
+
+
+
+
+
+
+		ofstream fatura("fatura.txt");
+		fatura << "Yazdırılmak istenen metin";
+		fatura.close();
+
+		string metin;
+
+		ifstream fatura1("fatura.txt");
+		while (getline(fatura1, metin)) {
+			cout << metin;
+		}
+
+	}
+};
+
+
+
+
+int main()
+{
+	setlocale(LC_ALL, "turkish");
+
+
+	girisArayuz giris;
+
+	giris.welcome();
+	giris.giris();
+
+
+
+	cout << endl;
+	Film film("1)PREDESTINATION", "2)AVATAR 2", "3)THE BATMAN", "İYİ SEYİRLER DİLERİZ!!!");
+
+
+	UcretSaat ucret(50, 19.30);
+	ucret.showInfos(film);
+	mesaj(film);
+	cout << endl << endl;
+	Yazdir2::showInf(ucret);
+
+	cout << endl << endl;
+
+
+	int filmsec;
+	cout << "FİLM SEÇİNİZ: ";
+	cin >> filmsec;
+
+	string saat;
+	cout << "SAAT SEÇİNİZ: ";
+	cin >> saat;
+
+
+	int kapasite = 20;
+	Musteri musteri(kapasite);
+	cout << endl;
+	cout << "Koltuk Durumları " << endl;
+	musteri.biletSatınAl(1, "DOLU");
+	musteri.biletSatınAl(13, "DOLU");
+	musteri.biletSatınAl(7, "DOLU");
+	musteri.biletSatınAl(9, "DOLU");
+	musteri.biletSatınAl(15, "DOLU");
+	musteri.biletSatınAl(4, "DOLU");
+
+	musteri.biletListele();
+	musteri.koltukSay();
+
+	int al;
+	cout << "Kaç bilet almak istiyorsunuz ";
+	cin >> al;
+
+
+	for (int i = 1; i <= al;i++) {
+
+		cout << endl;
+		int koltukSec;
+		cout << "Koltuk Seçiniz : ";
+
+		cin >> koltukSec;
+		string isimGir;
+		cout << "İsim Giriniz: ";
+		cin >> isimGir;
+
+		musteri.biletSatınAl(koltukSec, isimGir);
+
+		cout << endl << endl;
+
+	}
+
+	int bilet_ucret = 50 * al;
+
+
+
+
+
+}
