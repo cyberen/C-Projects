@@ -1,0 +1,254 @@
+#include <iostream>
+#include <clocale>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* sonra;
+    Node* once;
+
+    Node(int data) {
+        this->data = data;
+        this->sonra = nullptr;
+        this->once = nullptr;
+    }
+};
+
+class LinkedList {
+
+private:
+    Node* bas;
+    Node* son;
+   
+
+public:
+    int size;
+
+    LinkedList() {
+        this->bas = nullptr;
+        this->son = nullptr;
+        this->size = 0;
+    }
+
+    void basaEkle(int data) {
+
+        Node* nesne = new Node(data);
+
+        if (this->bas == nullptr) {
+
+            this->bas = nesne;
+            this->son = nesne;
+            nesne->once = nesne;
+            nesne->sonra = nesne;
+        }
+        else {
+
+            nesne->sonra = this->bas;
+            nesne->once = this->son;
+            this->bas->once = nesne;
+            this->son->sonra = nesne;
+            this->bas = nesne;
+        }
+        this->size++;
+    }
+
+    void arayaEkle(int data, int index) {
+
+        if (index < 0 || index > this->size) {
+            cout << "Geçersiz indeks" << endl;
+            return;
+        }
+        Node* nesne = new Node(data);
+         if (index == 0) {
+            basaEkle(data);
+            return;
+        }
+         if (index == this->size) {
+            sonaEkle(data);
+            return;
+        }
+
+        Node* eleman = this->bas;
+
+        for (int i = 0; i < index - 1; i++) {
+            eleman = eleman->sonra;
+        }
+        nesne->sonra = eleman->sonra;
+        nesne->once = eleman;
+        eleman->sonra->once = nesne;
+        eleman->sonra = nesne;
+        this->size++;
+    }
+
+    void sonaEkle(int data) {
+
+        Node* nesne = new Node(data);
+
+        if (this->son == nullptr) {
+
+            this->bas = nesne;
+            this->son = nesne;
+            nesne->once = nesne;
+            nesne->sonra = nesne;
+
+        }
+        else {
+
+            nesne->once = this->son;
+            nesne->sonra = this->bas;
+            this->son->sonra = nesne;
+            this->bas->once = nesne;
+            this->son = nesne;
+        }
+        this->size++;
+    }
+
+    void siraliEkle(int data) {
+
+        if (this->bas == nullptr) {
+            basaEkle(data);
+            return;
+        }
+        Node* nesne = new Node(data);
+        Node* eleman = this->bas;
+        while (eleman->data < data && eleman->sonra != this->bas) {
+            eleman = eleman->sonra;
+        }
+        if (eleman->data >= data) {
+
+            nesne->once = eleman->once;
+            nesne->sonra = eleman;
+            eleman->once->sonra = nesne;
+            eleman->once = nesne;
+        }
+        else {
+            nesne->once = eleman;
+            nesne->sonra = this->bas;
+            eleman->sonra = nesne;
+            this->bas->once = nesne;
+        }
+        this->size++;
+    }
+
+
+    void bastanSil() {
+
+        if (this->bas == nullptr) {
+            cout << "Liste boş" << endl;
+            return;
+        }
+        if (this->bas == this->son) {
+            delete this->bas;
+            this->bas = nullptr;
+            this->son = nullptr;
+        }
+        else {
+            Node* temp = this->bas;
+            this->bas = this->bas->sonra;
+            this->son->sonra = this->bas;
+            this->bas->once = this->son;
+            delete temp;
+        }
+        this->size--;
+    }
+
+
+    void sondanSil() {
+
+        if (this->son == nullptr) {
+            cout << "Liste boş" << endl;
+            return;
+        }
+        if (this->bas == this->son) {
+            delete this->bas;
+            this->bas = nullptr;
+            this->son = nullptr;
+        }
+        else {
+            Node* temp = this->son;
+            this->son = this->son->once;
+            this->bas->once = this->son;
+            this->son->sonra = this->bas;
+            delete temp;
+        }
+        this->size--;
+    }
+
+void yazdir() {
+
+    if (this->bas == nullptr) {
+        cout << "Liste boş" << endl;
+        return;
+    }
+
+    Node* eleman = this->bas;
+
+    do {
+        cout << eleman->data << " ";
+        eleman = eleman->sonra;
+    } while (eleman != this->bas);
+    cout << endl;
+}
+
+void yazdırBasSon() {
+    if (this->bas == nullptr) {
+        cout << "Liste boş" << endl;
+        return;
+    }
+    cout << "İlk eleman: " << this->bas->data << endl;
+    cout << "Son eleman: " << this->son->data << endl;
+}
+
+
+
+};
+
+
+
+int main() {
+
+    setlocale(LC_ALL, "turkish");
+
+    LinkedList list;
+
+    
+    list.siraliEkle(5);
+    list.siraliEkle(2);
+    list.siraliEkle(7);
+    list.siraliEkle(1);
+    list.siraliEkle(9);
+
+    
+    cout << "Bağlı liste: ";
+    list.yazdir();
+
+   
+    list.yazdırBasSon();
+
+    
+    list.arayaEkle(3, 2);
+    cout << "Araya ekleme sonrası bağlı liste: ";
+    list.yazdir();
+
+    
+    list.sonaEkle(10);
+    cout << "Sona ekleme sonrası bağlı liste: ";
+    list.yazdir();
+
+   
+    list.bastanSil();
+    cout << "İlk elemanı silme sonrası bağlı liste: ";
+    list.yazdir();
+
+    
+    list.sondanSil();
+    cout << "Son elemanı silme sonrası bağlı liste: ";
+    list.yazdir();
+
+ 
+    cout << "Bağlı liste eleman sayısı: " << list.size << endl;
+
+    return 0;
+}
+
